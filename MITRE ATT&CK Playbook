@@ -1,0 +1,54 @@
+ATT&CK ID: T111O 
+Tactic: Credential Access 
+Technique: Brute Force
+Procedure: Atomic Red Teams SUDO Brute Force test
+What it does: Adversaries may use brute force techniques to gain access to accounts when passwords are unknown or when password hashes are obtained. Without knowledge of the password for an account or set of accounts, an adversary may systematically guess the password using a repetitive or iterative mechanism. Brute forcing passwords can take place via interaction with a service that will check the validity of those credentials or offline against previously acquired credential data, such as password hashes.
+
+How to Detect it: High volume of failed logon attempts followed by a successful one from a suspicious user, host, or timeframe.
+Multiple authentication failures for valid or invalid users followed by success from same IP/user.
+Multiple failed authentications in unified logs (e.g., loginwindow or sshd)
+Excessive login attempts followed by success from SaaS apps like O365, Dropbox, etc.
+
+How to respond: 
+1.Confirm the account — Identify which user account the failed sudo attempts targeted.
+2.Check for success — determine if any attempt eventually succeeded (a burst of failures followed by one success is the signature of a successful brute force, not just noise)
+3.Lock or disable the account immediately if compromise is confirmed or suspected, especially if it has sudo/root privileges.
+4.Review what the account did after gaining access, check subsequent commands run under that session for signs of lateral movement, data access, or persistence.
+5.Force a password reset for the affected account and any accounts sharing the same password (credential reuse is common)
+
+
+ATT&CK ID: T1059
+Tactic: Execution
+Technique: Scripting
+Procedure: Atomic Red Team’s “Command line scripts” test simulates an adversary evading detection by pre-encoding a command in base64 before execution.
+What it does: Adversaries may abuse command and script interpreters to execute commands, scripts, or binaries. These interfaces and languages provide ways of interacting with computer systems and are a common feature across many different platforms.
+
+How to detect it: The execution of scripting or command interpreters (e.g., powershell.exe, cmd.exe, wscript.exe) outside expected administrative time windows or from abnormal user contexts, often followed by encoded/obfuscated arguments or secondary execution events.
+Use of shell interpreters (e.g., bash, sh, python, perl) initiated by users or processes not normally executing them, especially when chaining suspicious utilities like netcat, curl, or ssh.
+Launch of command line interpreters via Terminal, Automator, or hidden scripts, especially when parent process lineage deviates from user initiated applications.
+Use of 'esxcli system' or direct interpreter commands (e.g., busybox shell) invoked from SSH or host terminal unexpectedly.
+
+How to respond:
+1.Assess intent — Determine if the decoded command is harmless or malicious (data exfiltration, backdoor installation, credential harvesting, etc.)
+2.Check process lineage — Identify the parent process and user session that ran the command, to trace how the attacker got shell access in the first place.
+3.Isolate the host if the decoded command indicates real compromise (e.g., reverse shell, malware download).
+4.Hunt for related activity — search logs for other base64-encoded or obfuscated commands around the same timeframe, since obfuscation is rarely a one off action.
+5.Strengthen detection — implement a custom rule matching common obfuscation patterns (base64 -d, base64 --decode, eval $(echo...)) piped into shell interpreters, since default rulesets typically don’t flag this pattern as suspicious on its own.
+
+
+ATT&CK ID: T1078
+Tactic:  Stealth, Persistence, Privilege Escalation, Initial Access
+Technique: Valid Accounts
+Procedure: Atomic Red Teams Test creatse a new user with a set password the logs into it via su to simulate an attacker establishing a foothold using a self created "legitimate" account.
+What it does: Adversaries may obtain and abuse credentials of a local account as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Local accounts are those configured by an organization for use by users, remote support, services, or for administration on a single system or service.
+How to detect it: Anomalous usage of local accounts to log into a system, especially accounts not typically used interactively or outside business hours.
+Interactive or service logins from local accounts outside expected operational context or at anomalous times.
+Abnormal or rare logins via local accounts through system or remote mechanisms such as SSH.
+How to respond:
+1.Verify legitimacy immediately — confirm with system owners/admins whether the new account was authorized; unexplained new local accounts are a strong compromise indicator.
+2.Disable the account on discovery — don’t delete it right away, since you may need it for forensic review of what it accessed or did before disabling.
+3.Review account privileges — check what group memberships and permissions the account was given (e.g., sudo, wheel, admin groups); accounts created by attackers are often granted excessive privileges immediately.
+4.Trace the parent process/session — identify which user or process created the account, to determine how the attacker gained the access needed to run the process in the first place.
+5.Check for related persistence mechanisms — attackers who create accounts often pair it with other persistence techniques (cron jobs, SSH keys, modified .bashrc); review the same timeframe for other suspicious changes.
+6.Audit all local accounts on the system — a single unauthorized account is often not the only one; do a full pass of /etc/passwd and compare against your account inventory.
+7.Force credential rotation — if the attacker had access to create accounts, assume broader compromise and rotate credentials for other privileged accounts on the host.
