@@ -1,5 +1,5 @@
-# MITRE-Attack-Simulation-with-Atomic-Red-Team-and-Detection-with-Wazuh
-This project simulated MITRE ATT&CK techniques with Atomic Red Team and validated detection coverage in Wazuh SIEM. A purple team exercise covering brute force, scripting and obfuscated command execution, and valid account abuse. 
+# MITRE-Att&ck-Simulation-with-Atomic-Red-Team-and-Detection-with-Wazuh
+A simulation of MITRE ATT&CK techniques with Atomic Red Team and detection coverage in Wazuh SIEM. A purple team project covering brute force, scripting and obfuscated command execution, and valid account abuse. 
 ## Overview
 
 This project validates real world detection coverage by simulating attacker behavior with Atomic Red Team and confirming whether Wazuh correctly detects it, this is the same workflow a SOC analyst uses to test and tune detection rules.
