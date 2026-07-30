@@ -4,7 +4,7 @@ Technique: Brute Force
 Procedure: Atomic Red Teams SUDO Brute Force test
 What it does: Adversaries may use brute force techniques to gain access to accounts when passwords are unknown or when password hashes are obtained. Without knowledge of the password for an account or set of accounts, an adversary may systematically guess the password using a repetitive or iterative mechanism. Brute forcing passwords can take place via interaction with a service that will check the validity of those credentials or offline against previously acquired credential data, such as password hashes.
 
-How to Detect it: High volume of failed logon attempts followed by a successful one from a suspicious user, host, or timeframe.
+How to Detect it: High volume of failed login attempts followed by a successful one from a suspicious user, host, or timeframe.
 Multiple authentication failures for valid or invalid users followed by success from same IP/user.
 Multiple failed authentications in unified logs (e.g., loginwindow or sshd)
 Excessive login attempts followed by success from SaaS apps like O365, Dropbox, etc.
@@ -41,9 +41,11 @@ Tactic:  Stealth, Persistence, Privilege Escalation, Initial Access
 Technique: Valid Accounts
 Procedure: Atomic Red Teams Test creatse a new user with a set password the logs into it via su to simulate an attacker establishing a foothold using a self created "legitimate" account.
 What it does: Adversaries may obtain and abuse credentials of a local account as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Local accounts are those configured by an organization for use by users, remote support, services, or for administration on a single system or service.
+
 How to detect it: Anomalous usage of local accounts to log into a system, especially accounts not typically used interactively or outside business hours.
 Interactive or service logins from local accounts outside expected operational context or at anomalous times.
 Abnormal or rare logins via local accounts through system or remote mechanisms such as SSH.
+
 How to respond:
 1.Verify legitimacy immediately — confirm with system owners/admins whether the new account was authorized; unexplained new local accounts are a strong compromise indicator.
 2.Disable the account on discovery — don’t delete it right away, since you may need it for forensic review of what it accessed or did before disabling.
